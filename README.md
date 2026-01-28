@@ -37,7 +37,14 @@ Inmutabilidad: Al usar final, garantizas que la dependencia no cambie una vez qu
 Contratos Claros: No puedes crear el objeto si falta una pieza. Si intentas hacer un new manual en una prueba unitaria, el compilador te obligará a pasarle las dependencias.
 
 Adiós a @Autowired: En versiones modernas de Spring, si solo tienes un constructor, ya no necesitas poner la anotación @Autowired encima; Spring lo entiende automáticamente.
+Al ejemplo quedaría así
 
+    //@Autowired
+    private IProductoRepository repository;
+    public ProductoServiceImpl(IProductoRepository repository) {
+     this.repository = repository;
+    }
+    
 2. Inyección por Atributo (Field Injection)
 Es cuando pones el @Autowired directamente sobre la variable: @Autowired private MiServicio servicio;.
 
