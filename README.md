@@ -2,7 +2,7 @@
 
 Es vital no instanciar el servicio con la palabra new, sino permitir que Spring lo inyecte, asegurando así que todas las capas de la aplicación estén correctamente conectadas y gestionadas por el contenedor de inversión de control, como lo veremos a continuación. Para realizar la inyección de dependencia utilizamos la notación @Autowired es una anotación fundamental en Spring Framework que permite la inyección de dependencias automática. Spring busca beans (objetos gestionados) en su contenedor y los asigna automáticamente a los campos, constructores o métodos setter, eliminando la necesidad de crear objetos manualmente.
 private ProductoRepositoryImpl repository = new ProductoRepositoryImpl(); 
-En lugar de crear una nueva instancia con el operador new, es decir en lugar de que nosotros llamemos al objeto (repository), el contenedor nos llama a nosotros y nos provee el objeto, principio Hollywood. Y simplemente anotamos con @Autowired haciendo referencia a la clase de la interfaz IProductoRepository.
+En lugar de crear una nueva instancia con el operador new, es decir en lugar de que nosotros llamemos al objeto (repository), el contenedor nos llama a nosotros y nos provee el objeto, principio Hollywood. Y simplemente anotamos con @Autowired haciendo referencia a la clase de la interfaz IProductoRepository, por atributo.
 @Autowired
 private IProductoRepository repository;
 
@@ -37,3 +37,15 @@ Inmutabilidad: Al usar final, garantizas que la dependencia no cambie una vez qu
 Contratos Claros: No puedes crear el objeto si falta una pieza. Si intentas hacer un new manual en una prueba unitaria, el compilador te obligará a pasarle las dependencias.
 
 Adiós a @Autowired: En versiones modernas de Spring, si solo tienes un constructor, ya no necesitas poner la anotación @Autowired encima; Spring lo entiende automáticamente.
+
+2. Inyección por Atributo (Field Injection)
+Es cuando pones el @Autowired directamente sobre la variable: @Autowired private MiServicio servicio;.
+
+Por qué NO usarla: Es muy cómoda de escribir, pero hace que tu clase sea "esclava" de Spring. Si quieres probar esa clase fuera de Spring (en un Test unitario puro), es muy difícil inyectarle una dependencia falsa (Mock) porque el atributo es privado y no hay constructor ni setter. Además, permite que la clase crezca demasiado (puedes tener 20 atributos con @Autowired y no notarás que tu clase tiene demasiadas responsabilidades).
+
+3. Inyección por Setter
+Se usa poniendo el @Autowired sobre un método setAlgo().
+
+Cuándo usarla: Es ideal para dependencias opcionales. Si tu clase puede funcionar perfectamente sin esa pieza, o si necesitas cambiar la dependencia en tiempo de ejecución (algo poco común), el setter es el camino.
+
+Aunque Spring ofrece flexibilidad en la forma de inyectar dependencias, la inyección por constructor se ha consolidado como la práctica estándar en la industria. Al promover la inmutabilidad de los componentes y facilitar las pruebas unitarias sin depender del contenedor de Spring, garantiza una arquitectura más robusta y menos propensa a errores de puntero nulo (NullPointerException) durante la inicialización."
