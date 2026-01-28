@@ -18,8 +18,11 @@ import com.cesar.springboot.di.app.springboot_di.services.IProductoService;
 public class ProductoController {
 
     //private ProductoServiceImpl servicio = new ProductoServiceImpl();
-    @Autowired
+    //@Autowired
     private IProductoService servicio;
+    public ProductoController(IProductoService servicio) {
+        this.servicio = servicio;
+    }
 
     @GetMapping
     public List<Producto> list(){

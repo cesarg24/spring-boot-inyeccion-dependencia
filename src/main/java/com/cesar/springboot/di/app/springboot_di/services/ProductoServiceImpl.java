@@ -13,8 +13,12 @@ import com.cesar.springboot.di.app.springboot_di.repositories.IProductoRepositor
 @Service
 public class ProductoServiceImpl implements IProductoService {
 
-    @Autowired
+    //@Autowired
     private IProductoRepository repository;
+
+    public ProductoServiceImpl(IProductoRepository repository) {
+     this.repository = repository;
+    }
     
     /* private ProductoRepositoryImpl repository = new ProductoRepositoryImpl(); 
     En lugar de que nosotros llamemos al objeto (repository), el contenedor nos llama a nosotros y nos provee el objeto, principio Hollywood*/
@@ -34,4 +38,5 @@ public class ProductoServiceImpl implements IProductoService {
     public Producto findById(Long id){
         return repository.findById(id);
     }
+    
 }
