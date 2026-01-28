@@ -1,27 +1,27 @@
-# Práctica de Spring Boot creando las principales capas: repositories, services, controllers y models
+# Práctica de Spring Boot inyección de dependencia
 
-Este proyecto es una implementación práctica de una arquitectura limpia en Java utilizando **Spring Boot**. El objetivo es demostrar la separación de responsabilidades y el flujo de datos entre las capas de una aplicación web moderna.
+Es vital no instanciar el servicio con la palabra new, sino permitir que Spring lo inyecte, asegurando así que todas las capas de la aplicación estén correctamente conectadas y gestionadas por el contenedor de inversión de control, como lo veremos a continuación. Para realizar la inyección de dependencia utilizamos la notación @Autowired es una anotación fundamental en Spring Framework que permite la inyección de dependencias automática. Spring busca beans (objetos gestionados) en su contenedor y los asigna automáticamente a los campos, constructores o métodos setter, eliminando la necesidad de crear objetos manualmente.
+private ProductoRepositoryImpl repository = new ProductoRepositoryImpl(); 
+En lugar de crear una nueva instancia con el operador new, es decir en lugar de que nosotros llamemos al objeto (repository), el contenedor nos llama a nosotros y nos provee el objeto, principio Hollywood. Y simplemente anotamos con @Autowired haciendo referencia a la clase de la interfaz IProductoRepository.
+@Autowired
+private IProductoRepository repository;
 
-## 🚀 Arquitectura del Proyecto
+## 🧩 Arquitectura basada en Meta-anotaciones
 
-El proyecto sigue el patrón de diseño por capas:
+Una de las características más potentes de este proyecto es el uso de **Meta-anotaciones** de Spring Framework. En Spring, las anotaciones de "estereotipo" no son elementos aislados, sino que heredan capacidades de una anotación base llamada `@Component`.
 
-* **Controller:** Define los endpoints REST y gestiona las peticiones HTTP.
-* **Service:** Contiene la lógica de negocio (ej. cálculos de impuestos y transformaciones).
-* **Repository:** Simula la persistencia de datos y el acceso a la fuente de información.
-* **Model:** Define la estructura de los objetos de negocio.
+### ¿Qué es una Meta-anotación?
+Es una anotación que se aplica sobre otra anotación. Esto permite crear una jerarquía de componentes donde cada uno hereda el comportamiento de detección automática (Component Scanning) pero añade una especialización semántica y funcional:
 
-## 🛠️ Tecnologías Utilizadas
+| Anotación | Meta-anotación base | Especialización |
+| :--- | :--- | :--- |
+| **`@Repository`** | `@Component` | Añade traducción automática de excepciones de persistencia. |
+| **`@Service`** | `@Component` | Define la capa de lógica de negocio (Business Logic). |
+| **`@RestController`**| `@Controller` + `@ResponseBody` | Gestiona peticiones HTTP y serializa la respuesta a JSON. |
 
-* **Java 17**
-* **Spring Boot 3**
-* **Maven** (Gestor de dependencias)
 
-## 💡 Conceptos Implementados
 
-1. Repository (Capa de Acceso a Datos): Esta es la encargada de interactuar directamente con la base de datos. Su función es ejecutar operaciones CRUD (Select, Insert, Update, Delete) y gestionar las consultas necesarias para recuperar o persistir información.
-2. Service (Capa de Lógica de Negocio): Actúa como intermediario entre los controladores y los repositorios. Aquí se reside la lógica del sistema, permitiendo manipular datos de múltiples repositorios y garantizando que las operaciones se ejecuten de forma segura bajo una misma transacción.
-3. Controller (Capa de Presentación/API): Es el punto de entrada de la aplicación. Se encarga de gestionar los métodos handler para recibir las peticiones de los usuarios, procesarlas a través de los servicios y retornar la respuesta adecuada, ya sea mediante una vista dinámica o una representación en formato JSON.
-4. Models: Esta capa contiene las entidades y estructuras de datos que representan la información del dominio y que fluyen a través de todas las capas anteriores.
-5.  **Streams API:** Procesamiento eficiente de colecciones para aplicar lógica de negocio (IVA del 25%).
-6.  **Patrón Singleton:** Servicios y repositorios gestionados como instancias únicas.
+### Ventajas de este enfoque:
+1. **Semántica Clara:** Facilita la lectura del código al identificar inmediatamente el rol de la clase.
+2. **Aspectos Técnicos:** Spring puede aplicar comportamientos específicos (como gestión de transacciones en Servicios o seguridad en Controladores) basándose en estas marcas.
+3. **Escalabilidad:** Permite separar las responsabilidades siguiendo los principios **SOLID**, facilitando el mantenimiento y las pruebas unitarias.
