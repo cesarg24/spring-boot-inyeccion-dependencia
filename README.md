@@ -25,3 +25,15 @@ Es una anotación que se aplica sobre otra anotación. Esto permite crear una je
 1. **Semántica Clara:** Facilita la lectura del código al identificar inmediatamente el rol de la clase.
 2. **Aspectos Técnicos:** Spring puede aplicar comportamientos específicos (como gestión de transacciones en Servicios o seguridad en Controladores) basándose en estas marcas.
 3. **Escalabilidad:** Permite separar las responsabilidades siguiendo los principios **SOLID**, facilitando el mantenimiento y las pruebas unitarias.
+
+No solamente podemos inyectar mediante el atributo, sino también mediante constructor o también mediante método setter, ¿pero cual es recomendable?.
+Aunque las tres formas funcionan, el equipo de Spring y la comunidad de desarrolladores profesionales recomiendan encarecidamente la inyección por constructor.
+
+1. Inyección por Constructor (La Recomendada) 🏆
+Es la que usas cuando declaras tus atributos como private final.
+
+Inmutabilidad: Al usar final, garantizas que la dependencia no cambie una vez que el objeto ha sido creado. Esto es vital para la seguridad del hilo (thread-safety).
+
+Contratos Claros: No puedes crear el objeto si falta una pieza. Si intentas hacer un new manual en una prueba unitaria, el compilador te obligará a pasarle las dependencias.
+
+Adiós a @Autowired: En versiones modernas de Spring, si solo tienes un constructor, ya no necesitas poner la anotación @Autowired encima; Spring lo entiende automáticamente.
